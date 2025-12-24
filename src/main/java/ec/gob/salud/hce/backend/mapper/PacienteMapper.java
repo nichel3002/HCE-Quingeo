@@ -3,7 +3,8 @@ package ec.gob.salud.hce.backend.mapper;
 import ec.gob.salud.hce.backend.dto.PacienteRequestDTO;
 import ec.gob.salud.hce.backend.dto.PacienteResponseDTO;
 import ec.gob.salud.hce.backend.entity.Paciente;
-import ec.gob.salud.hce.backend.util.EdadUtil;
+
+import java.time.Period;
 
 public class PacienteMapper {
 
@@ -11,10 +12,14 @@ public class PacienteMapper {
         // Evita instanciación
     }
 
-    // ============================
-    // RequestDTO → Entity
-    // ============================
+    // =========================
+    // DTO → ENTITY
+    // =========================
     public static Paciente toEntity(PacienteRequestDTO dto) {
+
+        if (dto == null) {
+            return null;
+        }
 
         Paciente paciente = new Paciente();
 
@@ -22,7 +27,6 @@ public class PacienteMapper {
         paciente.setSegundoNombre(dto.getSegundoNombre());
         paciente.setApellidoPaterno(dto.getApellidoPaterno());
         paciente.setApellidoMaterno(dto.getApellidoMaterno());
-
         paciente.setSexo(dto.getSexo());
         paciente.setFechaNacimiento(dto.getFechaNacimiento());
         paciente.setTipoSangre(dto.getTipoSangre());
@@ -33,17 +37,18 @@ public class PacienteMapper {
         paciente.setIdPrqProvincia(dto.getIdPrqProvincia());
 
         paciente.setUsuario(dto.getUsuario());
-        paciente.setUuidOnline(dto.getUuidOnline());
-        paciente.setSyncStatus(dto.getSyncStatus());
-        paciente.setOrigin(dto.getOrigin());
 
         return paciente;
     }
 
-    // ============================
-    // Entity → ResponseDTO
-    // ============================
-    public static PacienteResponseDTO toResponseDTO(Paciente paciente) {
+    // =========================
+    // ENTITY → RESPONSE DTO
+    // =========================
+    public static PacienteResponseDTO toResponse(Paciente paciente) {
+
+        if (paciente == null) {
+            return null;
+        }
 
         PacienteResponseDTO dto = new PacienteResponseDTO();
 
@@ -71,14 +76,29 @@ public class PacienteMapper {
         dto.setSyncStatus(paciente.getSyncStatus());
         dto.setOrigin(paciente.getOrigin());
 
-        // ✅ EDAD CALCULADA
-        dto.setEdad(
-                EdadUtil.calcularEdad(
-                        paciente.getFechaNacimiento(),
-                        paciente.getFechaCreacion()
-                )
-        );
+        // Edad calculada
+        dto.setEdad(calcularEdad(
+                paciente.getFechaNacimiento(),
+                paciente.getFechaCreacion()
+        ));
 
         return dto;
+    }
+
+    // =========================
+    // UTILIDAD EDAD
+    // =========================
+    private static Integer calcularEdad(
+            java.time.LocalDate nacimiento,
+            java.time.LocalDateTime fechaCreacion) {
+
+        if (nacimiento == null || fechaCreacion == null) {
+            return null;
+        }
+
+        return Period.between(
+                nacimiento,
+                fechaCreacion.toLocalDate()
+        ).getYears();
     }
 }

@@ -19,7 +19,7 @@ public class PacienteResponseDTO {
 
     private String sexo;
     private LocalDate fechaNacimiento;
-    private Integer edad; // ✅ AQUÍ
+    private Integer edad;
     private String tipoSangre;
 
     private Long idGrupoEtnico;
