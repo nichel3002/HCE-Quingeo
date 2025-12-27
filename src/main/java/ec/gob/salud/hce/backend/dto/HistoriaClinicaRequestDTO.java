@@ -1,6 +1,5 @@
 package ec.gob.salud.hce.backend.dto;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Getter
@@ -9,12 +8,8 @@ import lombok.*;
 @AllArgsConstructor
 public class HistoriaClinicaRequestDTO {
 
-    @NotNull(message = "El id del paciente es obligatorio")
-    private Long idPaciente;
-
-    @NotNull(message = "El usuario es obligatorio")
+    private Long idPaciente;   // 👈 SOLO EL ID
     private String usuario;
-
     private String uuidOffline;
     private String syncStatus;
     private String origin;

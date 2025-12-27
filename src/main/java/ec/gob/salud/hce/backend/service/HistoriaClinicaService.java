@@ -7,5 +7,7 @@ public interface HistoriaClinicaService {
 
     HistoriaClinicaResponseDTO crearHistoriaClinica(HistoriaClinicaRequestDTO dto);
 
+    HistoriaClinicaResponseDTO obtenerPorId(Long idHistoriaClinica);
+
     HistoriaClinicaResponseDTO obtenerPorPaciente(Long idPaciente);
 }
