@@ -4,42 +4,37 @@ import ec.gob.salud.hce.backend.dto.HistoriaClinicaRequestDTO;
 import ec.gob.salud.hce.backend.dto.HistoriaClinicaResponseDTO;
 import ec.gob.salud.hce.backend.entity.HistoriaClinica;
 import ec.gob.salud.hce.backend.entity.Paciente;
+import org.springframework.stereotype.Component;
 
+@Component
 public class HistoriaClinicaMapper {
 
-    private HistoriaClinicaMapper() {
-        // Evita instancias
+    public HistoriaClinica toEntity(HistoriaClinicaRequestDTO dto, Paciente paciente) {
+
+        HistoriaClinica entity = new HistoriaClinica();
+
+        entity.setPaciente(paciente);
+        entity.setUsuario(dto.getUsuario());
+        entity.setUuidOffline(dto.getUuidOffline());
+        entity.setSyncStatus(dto.getSyncStatus());
+        entity.setOrigin(dto.getOrigin());
+
+        return entity;
     }
 
-    public static HistoriaClinica toEntity(HistoriaClinicaRequestDTO dto) {
-        if (dto == null) return null;
+    public HistoriaClinicaResponseDTO toResponse(HistoriaClinica entity) {
 
-        HistoriaClinica hc = new HistoriaClinica();
+        HistoriaClinicaResponseDTO dto = new HistoriaClinicaResponseDTO();
 
-        Paciente paciente = new Paciente();
-        paciente.setIdPaciente(dto.getIdPaciente());
-        hc.setPaciente(paciente);
+        dto.setIdHistoriaClinica(entity.getIdHistoriaClinica());
+        dto.setIdPaciente(entity.getPaciente().getIdPaciente());
+        dto.setFechaCreacion(entity.getFechaCreacion());
+        dto.setUsuario(entity.getUsuario());
+        dto.setUuidOffline(entity.getUuidOffline());
+        dto.setSyncStatus(entity.getSyncStatus());
+        dto.setLastModified(entity.getLastModified());
+        dto.setOrigin(entity.getOrigin());
 
-        hc.setUsuario(dto.getUsuario());
-        hc.setUuidOffline(dto.getUuidOffline());
-        hc.setSyncStatus(dto.getSyncStatus());
-        hc.setOrigin(dto.getOrigin());
-
-        return hc;
-    }
-
-    public static HistoriaClinicaResponseDTO toResponse(HistoriaClinica entity) {
-        if (entity == null) return null;
-
-        return new HistoriaClinicaResponseDTO(
-                entity.getIdHistoriaClinica(),
-                entity.getPaciente().getIdPaciente(),
-                entity.getFechaCreacion(),
-                entity.getUsuario(),
-                entity.getUuidOffline(),
-                entity.getSyncStatus(),
-                entity.getLastModified(),
-                entity.getOrigin()
-        );
+        return dto;
     }
 }

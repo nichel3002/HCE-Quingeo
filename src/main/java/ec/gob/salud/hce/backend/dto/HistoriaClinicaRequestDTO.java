@@ -8,7 +8,8 @@ import lombok.*;
 @AllArgsConstructor
 public class HistoriaClinicaRequestDTO {
 
-    private Long idPaciente;   // 👈 SOLO EL ID
+    private Long idPaciente;
+
     private String usuario;
     private String uuidOffline;
     private String syncStatus;

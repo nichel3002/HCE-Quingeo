@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class HistoriaClinica {
 
     @Id
@@ -19,27 +18,38 @@ public class HistoriaClinica {
     @Column(name = "id_historia_clinica")
     private Long idHistoriaClinica;
 
-    // 1 Paciente -> 1 Historia Clínica
-    @OneToOne
-    @JoinColumn(name = "id_paciente", nullable = false, unique = true)
+    // 🔗 RELACIÓN CON PACIENTE
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_paciente", nullable = false)
     private Paciente paciente;
 
-    @Column(name = "fecha_creacion", nullable = false)
+    // Auditoría
+    @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "usuario")
     private String usuario;
 
-    // Sincronización
-    @Column(name = "uuid_offline", length = 100)
+    @Column(name = "uuid_offline")
     private String uuidOffline;
 
-    @Column(name = "sync_status", length = 20)
+    @Column(name = "sync_status")
     private String syncStatus;
 
     @Column(name = "last_modified")
     private LocalDateTime lastModified;
 
-    @Column(length = 50)
+    @Column(name = "origin")
     private String origin;
+
+    @PrePersist
+    public void prePersist() {
+        this.fechaCreacion = LocalDateTime.now();
+        this.lastModified = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.lastModified = LocalDateTime.now();
+    }
 }
