@@ -10,24 +10,37 @@ import org.springframework.stereotype.Component;
 public class HistoriaClinicaMapper {
 
     public HistoriaClinica toEntity(HistoriaClinicaRequestDTO dto, Paciente paciente) {
+        if (dto == null) return null;
 
         HistoriaClinica entity = new HistoriaClinica();
-
         entity.setPaciente(paciente);
+        
+        // Campo nuevo detectado en tu MySQL
+        entity.setIdDiagnosticoPlanManejo(dto.getIdDiagnosticoPlanManejo());
+        
         entity.setUsuario(dto.getUsuario());
-        entity.setUuidOffline(dto.getUuidOffline());
-        entity.setSyncStatus(dto.getSyncStatus());
-        entity.setOrigin(dto.getOrigin());
+        entity.setOrigin(dto.getOrigin() != null ? dto.getOrigin() : "WEB");
+        entity.setSyncStatus(dto.getSyncStatus() != null ? dto.getSyncStatus() : "PENDING");
+        
+        // UUID automático si no viene en el DTO
+        entity.setUuidOffline(dto.getUuidOffline() != null ? 
+                             dto.getUuidOffline() : java.util.UUID.randomUUID().toString());
 
         return entity;
     }
 
     public HistoriaClinicaResponseDTO toResponse(HistoriaClinica entity) {
+        if (entity == null) return null;
 
         HistoriaClinicaResponseDTO dto = new HistoriaClinicaResponseDTO();
-
         dto.setIdHistoriaClinica(entity.getIdHistoriaClinica());
-        dto.setIdPaciente(entity.getPaciente().getIdPaciente());
+        
+        // Mapeo seguro del ID del Paciente
+        if (entity.getPaciente() != null) {
+            dto.setIdPaciente(entity.getPaciente().getIdPaciente().longValue());
+        }
+
+        dto.setIdDiagnosticoPlanManejo(entity.getIdDiagnosticoPlanManejo());
         dto.setFechaCreacion(entity.getFechaCreacion());
         dto.setUsuario(entity.getUsuario());
         dto.setUuidOffline(entity.getUuidOffline());

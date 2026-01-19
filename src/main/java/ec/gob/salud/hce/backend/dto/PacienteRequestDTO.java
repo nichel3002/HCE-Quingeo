@@ -1,53 +1,29 @@
 package ec.gob.salud.hce.backend.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
-import lombok.*;
-
+import lombok.Data;
 import java.time.LocalDate;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data // Esto genera los métodos getIdPsicomotor, etc., automáticamente
 public class PacienteRequestDTO {
-
-    // =========================
-    // DATOS PERSONALES
-    // =========================
-    @NotBlank
     private String primerNombre;
-
     private String segundoNombre;
-
-    @NotBlank
     private String apellidoPaterno;
-
     private String apellidoMaterno;
-
-    @NotBlank
     private String sexo;
-
-    @NotNull
-    @Past
     private LocalDate fechaNacimiento;
-
     private String tipoSangre;
+    private Integer edad;
+    // --- ESTOS SON LOS CAMPOS QUE LE FALTAN A TU DTO ---
+    private Integer idPsicomotor;
+    private Integer idAntecedenteFamiliar;
+    private Integer idExamenFisico;
+    private Integer idDiagnosticoPlanManejo;
+    private Integer idParroquia;
+    private Integer idPrqCntProvincia;
+    // --------------------------------------------------
 
-    // =========================
-    // DEMOGRAFÍA
-    // =========================
-    private Long idGrupoEtnico;
-    private Long idPrqParroquia;
-    private Long idPrqCanton;
-    private Long idPrqProvincia;
-
-    // =========================
-    // AUDITORÍA / SINCRONIZACIÓN
-    // =========================
-    private String usuario;
-    private String uuidOnline;
-    private String syncStatus;
-    private String origin;
+    private Integer idGrupoEtnico;
+    private Integer idPrqParroquia;
+    private Integer idPrqCanton;
+    private Integer idPrqProvincia;
 }

@@ -12,7 +12,7 @@ public class HistoriaClinicaResponseDTO {
 
     private Long idHistoriaClinica;
     private Long idPaciente;
-
+    private Integer idDiagnosticoPlanManejo;
     private LocalDateTime fechaCreacion;
     private String usuario;
 

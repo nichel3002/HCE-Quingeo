@@ -10,44 +10,50 @@ import ec.gob.salud.hce.backend.repository.PacienteRepository;
 import ec.gob.salud.hce.backend.service.HistoriaClinicaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class HistoriaClinicaServiceImpl implements HistoriaClinicaService {
 
-    private final HistoriaClinicaRepository historiaClinicaRepository;
+    private final HistoriaClinicaRepository repository;
     private final PacienteRepository pacienteRepository;
-    private final HistoriaClinicaMapper historiaClinicaMapper;
+    private final HistoriaClinicaMapper mapper;
 
     @Override
+    @Transactional
     public HistoriaClinicaResponseDTO crearHistoriaClinica(HistoriaClinicaRequestDTO dto) {
-
         Paciente paciente = pacienteRepository.findById(dto.getIdPaciente())
                 .orElseThrow(() -> new RuntimeException("Paciente no encontrado"));
 
-        HistoriaClinica entity = historiaClinicaMapper.toEntity(dto, paciente);
-
-        return historiaClinicaMapper.toResponse(
-                historiaClinicaRepository.save(entity)
-        );
+        HistoriaClinica entity = mapper.toEntity(dto, paciente);
+        return mapper.toResponse(repository.save(entity));
     }
 
     @Override
-    public HistoriaClinicaResponseDTO obtenerPorId(Long idHistoriaClinica) {
-
-        HistoriaClinica historia = historiaClinicaRepository.findById(idHistoriaClinica)
-                .orElseThrow(() -> new RuntimeException("Historia clínica no encontrada"));
-
-        return historiaClinicaMapper.toResponse(historia);
+    @Transactional(readOnly = true)
+    public List<HistoriaClinicaResponseDTO> listarTodas() {
+        return repository.findAll().stream()
+                .map(mapper::toResponse)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public HistoriaClinicaResponseDTO obtenerPorPaciente(Long idPaciente) {
+    @Transactional(readOnly = true)
+    public HistoriaClinicaResponseDTO obtenerPorId(Long id) {
+        HistoriaClinica entity = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Historia no encontrada"));
+        return mapper.toResponse(entity);
+    }
 
-        HistoriaClinica historia = historiaClinicaRepository
-                .findByPacienteIdPaciente(idPaciente)
-                .orElseThrow(() -> new RuntimeException("Paciente sin historia clínica"));
-
-        return historiaClinicaMapper.toResponse(historia);
+    @Override
+    @Transactional(readOnly = true)
+    public List<HistoriaClinicaResponseDTO> obtenerPorPaciente(Long idPaciente) {
+        return repository.findByPacienteIdPaciente(idPaciente.intValue()).stream()
+                .map(mapper::toResponse)
+                .collect(Collectors.toList());
     }
 }

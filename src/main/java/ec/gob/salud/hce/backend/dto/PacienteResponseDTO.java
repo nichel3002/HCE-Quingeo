@@ -3,14 +3,12 @@ package ec.gob.salud.hce.backend.dto;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class PacienteResponseDTO {
-
-    private Long idPaciente;
 
     private String primerNombre;
     private String segundoNombre;
@@ -18,20 +16,16 @@ public class PacienteResponseDTO {
     private String apellidoMaterno;
 
     private String sexo;
-    private LocalDate fechaNacimiento;
+
     private Integer edad;
     private String tipoSangre;
+private Integer idPaciente;
+private Integer idGrupoEtnico;
+private Integer idPrqParroquia;
+private Integer idPrqCanton;
+private Integer idPrqProvincia;
 
-    private Long idGrupoEtnico;
-    private Long idPrqParroquia;
-    private Long idPrqCanton;
-    private Long idPrqProvincia;
+private LocalDate fechaCreacion;
+private LocalDate fechaNacimiento;
 
-    private String usuario;
-    private LocalDateTime fechaCreacion;
-    private LocalDateTime lastModified;
-
-    private String uuidOnline;
-    private String syncStatus;
-    private String origin;
 }
