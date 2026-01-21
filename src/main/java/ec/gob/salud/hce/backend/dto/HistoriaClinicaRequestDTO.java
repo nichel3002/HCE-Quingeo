@@ -9,7 +9,7 @@ import lombok.*;
 public class HistoriaClinicaRequestDTO {
 
     private Long idPaciente;
-
+    private Integer idDiagnosticoPlanManejo;
     private String usuario;
     private String uuidOffline;
     private String syncStatus;

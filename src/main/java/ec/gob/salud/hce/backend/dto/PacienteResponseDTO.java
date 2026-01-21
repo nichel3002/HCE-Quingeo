@@ -1,37 +1,34 @@
 package ec.gob.salud.hce.backend.dto;
 
-import lombok.*;
-
+import lombok.Getter;
+import lombok.Setter;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.List;
+
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class PacienteResponseDTO {
-
-    private Long idPaciente;
-
+    private Integer idPaciente;
     private String primerNombre;
     private String segundoNombre;
     private String apellidoPaterno;
     private String apellidoMaterno;
-
     private String sexo;
-    private LocalDate fechaNacimiento;
-    private Integer edad;
     private String tipoSangre;
+    private LocalDate fechaNacimiento;
+    private LocalDate fechaCreacion;
+    private Integer edad;
 
-    private Long idGrupoEtnico;
-    private Long idPrqParroquia;
-    private Long idPrqCanton;
-    private Long idPrqProvincia;
+    // Ubicación
+    private Integer idGrupoEtnico;
+    private Integer idPrqParroquia;
+    private Integer idPrqCanton;
+    private Integer idPrqProvincia;
 
-    private String usuario;
-    private LocalDateTime fechaCreacion;
-    private LocalDateTime lastModified;
-
-    private String uuidOnline;
-    private String syncStatus;
-    private String origin;
+    // --- AQUÍ ESTÁ LA UNIÓN DE INFORMACIÓN ---
+    // En lugar de IDs, enviamos las listas de datos completos
+    private List<DesarrolloPsicomotorDTO> desarrollosPsicomotores;
+    private List<AntecedenteFamiliarDTO> antecedentesFamiliares;
+    private List<ExamenFisicoDTO> examenesFisicos;
+    private List<AlergiaPacienteDTO> alergias; 
 }

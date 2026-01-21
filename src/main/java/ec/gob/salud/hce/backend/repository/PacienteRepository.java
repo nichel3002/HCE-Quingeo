@@ -13,7 +13,7 @@ public interface PacienteRepository extends JpaRepository<Paciente, Long> {
     // CONSULTAS BÁSICAS
     // =========================
 
-    Optional<Paciente> findByUuidOnline(String uuidOnline);
+    Optional<Paciente> findByUuidOffline(String uuidOffline);
 
-    boolean existsByUuidOnline(String uuidOnline);
+    boolean existsByUuidOffline(String uuidOffline);
 }

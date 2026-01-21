@@ -6,7 +6,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "historia_clinica")
+@Table(name = "historias_clinicas")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,6 +22,9 @@ public class HistoriaClinica {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_paciente", nullable = false)
     private Paciente paciente;
+
+    @Column(name = "id_diagnostico_plan_manejo") // Coincide con tu MySQL
+    private Integer idDiagnosticoPlanManejo;
 
     // Auditoría
     @Column(name = "fecha_creacion")
