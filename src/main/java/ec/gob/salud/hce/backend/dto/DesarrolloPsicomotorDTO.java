@@ -19,4 +19,6 @@ public class DesarrolloPsicomotorDTO {
     private String syncStatus;
     private LocalDateTime lastModified;
     private String origin;
+
+    
 }

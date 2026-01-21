@@ -22,7 +22,8 @@ public class AlergiaPacienteController {
 
     @GetMapping("/paciente/{idPaciente}")
     public List<AlergiaPaciente> listarPorPaciente(@PathVariable Integer idPaciente) {
-        return repository.findByIdPaciente(idPaciente);
+        // CORRECCIÓN: Se cambió findByIdPaciente por findByPaciente_IdPaciente
+        return repository.findByPaciente_IdPaciente(idPaciente);
     }
 
     @PostMapping

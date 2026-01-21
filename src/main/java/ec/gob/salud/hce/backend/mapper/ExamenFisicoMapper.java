@@ -14,9 +14,14 @@ public class ExamenFisicoMapper {
 
         ExamenFisicoDTO dto = new ExamenFisicoDTO();
         dto.setIdExamenFisico(entity.getIdExamenFisico());
+        dto.setIdHistoriaClinica(entity.getIdHistoriaClinica());
 
-        // Lógica de Unión: Si en la Entidad son Objetos, extraemos sus IDs
-        // Ajusta los nombres de los métodos según tus relaciones en la Entidad
+        // --- NUEVA LÍNEA: Mapeo del ID del Paciente ---
+        if (entity.getPaciente() != null) {
+            dto.setIdPaciente(entity.getPaciente().getIdPaciente());
+        }
+
+        // Lógica de Unión: Extraemos IDs de los objetos relacionados
         if (entity.getSignoVital() != null) {
             dto.setIdSignoVital(entity.getSignoVital().getIdSignoVital());
         }
@@ -24,8 +29,6 @@ public class ExamenFisicoMapper {
         if (entity.getExamenFisicoSegmentario() != null) {
             dto.setIdExamenFisicoSegmentario(entity.getExamenFisicoSegmentario().getIdExamenFisicoSegmentario());
         }
-
-        dto.setIdHistoriaClinica(entity.getIdHistoriaClinica());
 
         // Campos de sincronización
         dto.setUuidOffline(entity.getUuidOffline());

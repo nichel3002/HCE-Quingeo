@@ -7,6 +7,7 @@ import java.util.List;
 
 @Repository
 public interface AlergiaPacienteRepository extends JpaRepository<AlergiaPaciente, Integer> {
-    // Método útil para buscar todas las alergias de un paciente específico
-    List<AlergiaPaciente> findByIdPaciente(Integer idPaciente);
+    
+    // CORRECCIÓN: Usamos la propiedad 'paciente' y luego el campo 'idPaciente' de esa clase
+    List<AlergiaPaciente> findByPaciente_IdPaciente(Integer idPaciente);
 }

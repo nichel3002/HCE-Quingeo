@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDateTime;
+// --- IMPORTS NECESARIOS PARA LA LISTA ---
+import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Table(name = "desarrollos_psicomotores")
@@ -37,7 +40,11 @@ public class DesarrolloPsicomotor {
     private Paciente paciente;
 
     @Column(name = "id_historia_clinica")
-    private Integer idHistoriaClinica; // Puedes convertirlo a objeto si tienes la entidad HistoriaClinica
+    private Integer idHistoriaClinica;
+
+    // --- UNIÓN CON ALIMENTACIÓN (Esto conecta con la entidad anterior) ---
+    @OneToMany(mappedBy = "desarrolloPsicomotor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Alimentacion> alimentaciones = new ArrayList<>();
 
     // Auditoría y Sincronización
     @Column(name = "uuid_offline", length = 36)
