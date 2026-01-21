@@ -24,9 +24,8 @@ public class PacienteMapper {
         paciente.setTipoSangre(dto.getTipoSangre());
 
         // Mapeo de IDs obligatorios
-        paciente.setIdPsicomotor(dto.getIdPsicomotor());
-        paciente.setIdAntecedenteFamiliar(dto.getIdAntecedenteFamiliar());
-        paciente.setIdExamenFisico(dto.getIdExamenFisico());
+        
+        
         paciente.setIdDiagnosticoPlanManejo(dto.getIdDiagnosticoPlanManejo());
         paciente.setIdParroquia(dto.getIdParroquia());
         paciente.setIdGrupoEtnico(dto.getIdGrupoEtnico());
@@ -39,33 +38,36 @@ public class PacienteMapper {
     }
 
     public static PacienteResponseDTO toResponse(Paciente paciente) {
-        if (paciente == null) return null;
+    if (paciente == null) return null;
 
-        PacienteResponseDTO dto = new PacienteResponseDTO();
-        dto.setIdPaciente(paciente.getIdPaciente());
-        dto.setPrimerNombre(paciente.getPrimerNombre());
-        dto.setSegundoNombre(paciente.getSegundoNombre());
-        dto.setApellidoPaterno(paciente.getApellidoPaterno());
-        dto.setApellidoMaterno(paciente.getApellidoMaterno());
-        dto.setSexo(paciente.getSexo());
-        dto.setTipoSangre(paciente.getTipoSangre());
-        dto.setFechaNacimiento(paciente.getFechaNacimiento());
-        dto.setFechaCreacion(paciente.getFechaCreacion());
+    PacienteResponseDTO dto = new PacienteResponseDTO();
+    // ... (mapeo de campos básicos que ya tenías)
+    dto.setIdPaciente(paciente.getIdPaciente());
+    dto.setPrimerNombre(paciente.getPrimerNombre());
+    // ... etc.
 
-        // Mapeo de IDs para la respuesta
-        dto.setIdGrupoEtnico(paciente.getIdGrupoEtnico());
-        dto.setIdPrqParroquia(paciente.getIdPrqParroquia());
-        dto.setIdPrqCanton(paciente.getIdPrqCanton());
-        dto.setIdPrqProvincia(paciente.getIdPrqProvincia());
-
-        // Lógica de EDAD: Se calcula comparando Nacimiento vs Fecha Actual
-        if (paciente.getFechaNacimiento() != null) {
-            dto.setEdad(calcularEdad(paciente.getFechaNacimiento()));
-        }
-
-        return dto;
+    // MAPEANDO LAS LISTAS DE INFORMACIÓN VINCULADA
+    if (paciente.getDesarrollosPsicomotores() != null) {
+        dto.setDesarrollosPsicomotores(paciente.getDesarrollosPsicomotores()
+            .stream()
+            .map(DesarrolloPsicomotorMapper::toDto) // Usamos el mapper de esa entidad
+            .toList());
     }
 
+    if (paciente.getAntecedentesFamiliares() != null) {
+        dto.setAntecedentesFamiliares(paciente.getAntecedentesFamiliares()
+            .stream()
+            .map(AntecedenteFamiliarMapper::toDto)
+            .toList());
+    }
+
+    // Cálculo de edad
+    if (paciente.getFechaNacimiento() != null) {
+        dto.setEdad(Period.between(paciente.getFechaNacimiento(), LocalDate.now()).getYears());
+    }
+
+    return dto;
+}
     // Método completo para calcular la edad exacta en años
     private static Integer calcularEdad(LocalDate nacimiento) {
         if (nacimiento == null) {

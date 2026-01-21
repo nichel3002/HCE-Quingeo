@@ -3,9 +3,11 @@ package ec.gob.salud.hce.backend.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "pacientes")
@@ -18,19 +20,30 @@ public class Paciente {
     @Column(name = "id_paciente")
     private Integer idPaciente;
 
-    @Column(name = "id_psicomotor", nullable = false)
-    private Integer idPsicomotor;
+    // --- RELACIONES ---
 
-    @Column(name = "id_antecedente_familiar", nullable = false)
-    private Integer idAntecedenteFamiliar;
+    @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<DesarrolloPsicomotor> desarrollosPsicomotores;
 
-    @Column(name = "id_examen_fisico", nullable = false)
-    private Integer idExamenFisico;
+    @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<AntecedenteFamiliar> antecedentesFamiliares;
+
+    @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<ExamenFisico> examenesFisicos;
+
+    @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<AlergiaPaciente> alergias;
+
+    // --- CAMPOS RESTANTES ---
 
     @Column(name = "id_diagnostico_plan_manejo", nullable = false)
     private Integer idDiagnosticoPlanManejo;
 
-    @Column(name = "tipo_sangre", length = 10) // Verifica el nombre de la columna en tu DB
+    @Column(name = "tipo_sangre", length = 10)
     private String tipoSangre;
 
     @Column(name = "id_grupo_etnico", nullable = false)
@@ -54,13 +67,13 @@ public class Paciente {
     @Column(name = "primer_nombre", length = 60, nullable = false)
     private String primerNombre;
 
-    @Column(name = "segundo_nombre", length = 60, nullable = false)
+    @Column(name = "segundo_nombre", length = 60)
     private String segundoNombre;
 
     @Column(name = "apellido_paterno", length = 60, nullable = false)
     private String apellidoPaterno;
 
-    @Column(name = "apellido_materno", length = 60, nullable = false)
+    @Column(name = "apellido_materno", length = 60)
     private String apellidoMaterno;
 
     @Column(name = "fecha_creacion", nullable = false)
@@ -83,28 +96,22 @@ public class Paciente {
 
     @Column(name = "origin", length = 20, nullable = false)
     private String origin;
+
     @PrePersist
     protected void onCreate() {
-        // 1. Fecha de creación automática
         this.fechaCreacion = LocalDate.now();
-        
-        // 2. Fecha de última modificación inicial
         this.lastModified = LocalDateTime.now();
         
-        // 3. Generar UUID automáticamente si no viene (evita el error de null)
         if (this.uuidOffline == null) {
             this.uuidOffline = java.util.UUID.randomUUID().toString();
         }
         
-        // 4. Estado inicial por defecto
         if (this.syncStatus == null) {
             this.syncStatus = "PENDING";
         }
 
-        // 5. Origen por defecto si no se envía
         if (this.origin == null) {
             this.origin = "WEB";
         }
     }
 }
-
