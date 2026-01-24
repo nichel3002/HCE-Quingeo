@@ -7,5 +7,9 @@ import java.util.List;
 
 @Repository
 public interface DesarrolloPsicomotorRepository extends JpaRepository<DesarrolloPsicomotor, Integer> {
-    List<DesarrolloPsicomotor> findByIdHistoriaClinica(Integer idHistoriaClinica);
+    
+    // CORRECCIÓN:
+    // 1. Nombre: findBy + HistoriaClinica (Entidad) + IdHistoriaClinica (Campo dentro de HistoriaClinica)
+    // 2. Tipo: Long (Porque el ID de HistoriaClinica es Long)
+    List<DesarrolloPsicomotor> findByHistoriaClinicaIdHistoriaClinica(Long idHistoriaClinica);
 }

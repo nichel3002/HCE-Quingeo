@@ -25,12 +25,20 @@ public class DesarrolloPsicomotorController {
     @PostMapping
     public ResponseEntity<DesarrolloPsicomotorDTO> create(@RequestBody DesarrolloPsicomotorDTO dto) {
         DesarrolloPsicomotor entity = DesarrolloPsicomotorMapper.toEntity(dto);
+        // Validación básica para evitar null pointer
+        if (entity == null) return ResponseEntity.badRequest().build();
+        
         DesarrolloPsicomotor guardado = repository.save(entity);
         return ResponseEntity.ok(DesarrolloPsicomotorMapper.toDto(guardado));
     }
 
+    // CORRECCIÓN AQUÍ:
+    // 1. Recibimos Long (o Integer y lo convertimos). Lo ideal es recibir Long directamente.
+    // 2. Llamamos al método correcto del repositorio: findByHistoriaClinicaIdHistoriaClinica
     @GetMapping("/historia/{idHistoria}")
-    public List<DesarrolloPsicomotorDTO> getByHistoria(@PathVariable Integer idHistoria) {
-        return DesarrolloPsicomotorMapper.toDtoList(repository.findByIdHistoriaClinica(idHistoria));
+    public List<DesarrolloPsicomotorDTO> getByHistoria(@PathVariable Long idHistoria) {
+        return DesarrolloPsicomotorMapper.toDtoList(
+            repository.findByHistoriaClinicaIdHistoriaClinica(idHistoria)
+        );
     }
 }

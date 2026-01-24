@@ -26,7 +26,11 @@ public class HistoriaClinicaServiceImpl implements HistoriaClinicaService {
     @Override
     @Transactional
     public HistoriaClinicaResponseDTO crearHistoriaClinica(HistoriaClinicaRequestDTO dto) {
-        Paciente paciente = pacienteRepository.findById(dto.getIdPaciente())
+        // CORRECCIÓN 1: Casteo explícito de Long (DTO) a Integer (Entity)
+        // Usamos .intValue() para satisfacer al repositorio de Paciente
+        Integer idPaciente = (dto.getIdPaciente() != null) ? dto.getIdPaciente().intValue() : null;
+
+        Paciente paciente = pacienteRepository.findById(idPaciente)
                 .orElseThrow(() -> new RuntimeException("Paciente no encontrado"));
 
         HistoriaClinica entity = mapper.toEntity(dto, paciente);
@@ -52,7 +56,9 @@ public class HistoriaClinicaServiceImpl implements HistoriaClinicaService {
     @Override
     @Transactional(readOnly = true)
     public List<HistoriaClinicaResponseDTO> obtenerPorPaciente(Long idPaciente) {
-        return repository.findByPacienteIdPaciente(idPaciente.intValue()).stream()
+        // CORRECCIÓN 2: Casteo explícito aquí también
+        // Si el repositorio de Historia busca por "paciente.idPaciente" (Integer), debemos pasarle Integer
+        return repository.findByPacienteIdPaciente(idPaciente != null ? idPaciente.intValue() : null).stream()
                 .map(mapper::toResponse)
                 .collect(Collectors.toList());
     }

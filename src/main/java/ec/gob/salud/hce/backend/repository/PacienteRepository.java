@@ -7,13 +7,8 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface PacienteRepository extends JpaRepository<Paciente, Long> {
-
-    // =========================
-    // CONSULTAS BÁSICAS
-    // =========================
-
+public interface PacienteRepository extends JpaRepository<Paciente, Integer> {
+    
+    // Método auxiliar para buscar por UUID (utilizado en sincronización)
     Optional<Paciente> findByUuidOffline(String uuidOffline);
-
-    boolean existsByUuidOffline(String uuidOffline);
-}
+}   

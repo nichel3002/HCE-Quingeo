@@ -23,11 +23,17 @@ public class EnfermedadDiagnosticada {
     @Temporal(TemporalType.DATE)
     private Date fecha;
 
-    @Column(name = "id_enfermedad")
-    private Integer idEnfermedad;
+    // --- JOINS (RELACIONES) ---
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_enfermedad")
+    private Enfermedad enfermedad;
 
-    @Column(name = "id_antecedente_patologico_personal")
-    private Integer idAntecedentePatologicoPersonal;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_antecedente_patologico_personal")
+    private AntecedentePatologicoPersonal antecedentePatologicoPersonal;
+
+    // --------------------------
 
     @Column(name = "usuario")
     private String usuario;
@@ -40,4 +46,8 @@ public class EnfermedadDiagnosticada {
     
     @Column(name = "sync_status")
     private String syncStatus;
+
+    // Campo requerido por el Mapper
+    @Column(name = "origin")
+    private String origin;
 }

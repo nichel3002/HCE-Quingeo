@@ -8,6 +8,7 @@ import ec.gob.salud.hce.backend.repository.PacienteRepository;
 import ec.gob.salud.hce.backend.service.PacienteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,26 +18,32 @@ import java.util.stream.Collectors;
 public class PacienteServiceImp implements PacienteService {
 
     private final PacienteRepository pacienteRepository;
+    private final PacienteMapper pacienteMapper;
 
     @Override
+    @Transactional
     public PacienteResponseDTO crearPaciente(PacienteRequestDTO request) {
-        Paciente paciente = PacienteMapper.toEntity(request);
+        // Usamos la instancia inyectada del mapper
+        Paciente paciente = pacienteMapper.toEntity(request);
         Paciente guardado = pacienteRepository.save(paciente);
-        return PacienteMapper.toResponse(guardado);
+        return pacienteMapper.toResponse(guardado);
     }
 
     @Override
-    public PacienteResponseDTO obtenerPorId(Long id) {
+    @Transactional(readOnly = true)
+    public PacienteResponseDTO obtenerPorId(Integer id) {
+        // El repositorio ahora espera Integer, igual que el parámetro. Coincidencia perfecta.
         Paciente paciente = pacienteRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Paciente no encontrado"));
-        return PacienteMapper.toResponse(paciente);
+        return pacienteMapper.toResponse(paciente);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<PacienteResponseDTO> listarTodos() {
         return pacienteRepository.findAll()
                 .stream()
-                .map(PacienteMapper::toResponse)
+                .map(pacienteMapper::toResponse) // Referencia a método de instancia
                 .collect(Collectors.toList());
     }
 }

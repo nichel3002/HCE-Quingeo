@@ -18,22 +18,17 @@ public class PacienteController {
 
     private final PacienteService pacienteService;
 
-    // Crear paciente
     @PostMapping
-    public ResponseEntity<PacienteResponseDTO> crear(
-            @Valid @RequestBody PacienteRequestDTO request) {
-
+    public ResponseEntity<PacienteResponseDTO> crear(@Valid @RequestBody PacienteRequestDTO request) {
         PacienteResponseDTO response = pacienteService.crearPaciente(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    // Obtener paciente por ID
     @GetMapping("/{id}")
-    public ResponseEntity<PacienteResponseDTO> obtenerPorId(@PathVariable Long id) {
+    public ResponseEntity<PacienteResponseDTO> obtenerPorId(@PathVariable Integer id) {
         return ResponseEntity.ok(pacienteService.obtenerPorId(id));
     }
 
-    // Listar todos
     @GetMapping
     public ResponseEntity<List<PacienteResponseDTO>> listar() {
         return ResponseEntity.ok(pacienteService.listarTodos());

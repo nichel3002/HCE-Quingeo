@@ -20,17 +20,40 @@ public class Paciente {
     @Column(name = "id_paciente")
     private Integer idPaciente;
 
-    // --- RELACIONES ---
+    // ==========================================
+    //       RELACIONES (JOINS) - @ManyToOne
+    // ==========================================
 
-    @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL)
+    // Join con Grupo Étnico
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_grupo_etnico", nullable = false)
+    private GrupoEtnico grupoEtnico;
+
+    // Join con Parroquia (Ubicación)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_parroquia", nullable = false)
+    private Parroquia parroquia;
+
+    // Join con Diagnóstico (Si aplica según tu lógica de negocio)
+    // Nota: Si un paciente tiene un plan de manejo activo
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_diagnostico_plan_manejo")
+    private DiagnosticoPlanManejo diagnosticoPlanManejo;
+
+
+    // ==========================================
+    //       RELACIONES INVERSAS - @OneToMany
+    // ==========================================
+    
+    @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<DesarrolloPsicomotor> desarrollosPsicomotores;
 
-    @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<AntecedenteFamiliar> antecedentesFamiliares;
 
-    @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private List<ExamenFisico> examenesFisicos;
 
@@ -38,31 +61,36 @@ public class Paciente {
     @JsonIgnore
     private List<AlergiaPaciente> alergias;
 
-    // --- CAMPOS RESTANTES ---
+    // Nueva relación necesaria para historias clínicas
+    @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<HistoriaClinica> historiasClinicas;
 
-    @Column(name = "id_diagnostico_plan_manejo", nullable = false)
-    private Integer idDiagnosticoPlanManejo;
+
+    // ==========================================
+    //       CAMPOS NORMALES
+    // ==========================================
 
     @Column(name = "tipo_sangre", length = 10)
     private String tipoSangre;
 
-    @Column(name = "id_grupo_etnico", nullable = false)
-    private Integer idGrupoEtnico;
-
-    @Column(name = "id_parroquia", nullable = false)
-    private Integer idParroquia;
-
-    @Column(name = "id_prq_canton", nullable = false)
+    // --- Columnas de Ubicación Redundantes ---
+    // Las mantenemos como "insertable=false, updatable=false" si son parte de la FK compuesta
+    // o simplemente como columnas informativas si la BD las exige.
+    
+    @Column(name = "id_prq_canton")
     private Integer idPrqCanton;
 
-    @Column(name = "id_prq_parroquia", nullable = false)
+    @Column(name = "id_prq_parroquia")
     private Integer idPrqParroquia;
 
-    @Column(name = "id_prq_provincia", nullable = false)
+    @Column(name = "id_prq_provincia")
     private Integer idPrqProvincia;
 
-    @Column(name = "id_prq_cnt_provincia", nullable = false)
+    @Column(name = "id_prq_cnt_provincia")
     private Integer idPrqCntProvincia;
+
+    // ----------------------------------------
 
     @Column(name = "primer_nombre", length = 60, nullable = false)
     private String primerNombre;
@@ -85,6 +113,7 @@ public class Paciente {
     @Column(name = "sexo", length = 20, nullable = false)
     private String sexo;
 
+    // --- AUDITORÍA Y SYNC ---
     @Column(name = "uuid_offline", length = 36, nullable = false)
     private String uuidOffline;
 
@@ -101,17 +130,13 @@ public class Paciente {
     protected void onCreate() {
         this.fechaCreacion = LocalDate.now();
         this.lastModified = LocalDateTime.now();
-        
-        if (this.uuidOffline == null) {
-            this.uuidOffline = java.util.UUID.randomUUID().toString();
-        }
-        
-        if (this.syncStatus == null) {
-            this.syncStatus = "PENDING";
-        }
-
-        if (this.origin == null) {
-            this.origin = "WEB";
-        }
+        if (this.uuidOffline == null) this.uuidOffline = java.util.UUID.randomUUID().toString();
+        if (this.syncStatus == null) this.syncStatus = "PENDING";
+        if (this.origin == null) this.origin = "WEB";
+    }
+    
+    @PreUpdate
+    protected void onUpdate() {
+        this.lastModified = LocalDateTime.now();
     }
 }

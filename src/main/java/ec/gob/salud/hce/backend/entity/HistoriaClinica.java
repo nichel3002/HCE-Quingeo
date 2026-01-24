@@ -18,15 +18,26 @@ public class HistoriaClinica {
     @Column(name = "id_historia_clinica")
     private Long idHistoriaClinica;
 
-    // 🔗 RELACIÓN CON PACIENTE
+    // ==========================================
+    //       RELACIONES (JOINS)
+    // ==========================================
+
+    // Relación N:1 con Paciente (Muchas historias pertenecen a un paciente)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_paciente", nullable = false)
     private Paciente paciente;
 
-    @Column(name = "id_diagnostico_plan_manejo") // Coincide con tu MySQL
-    private Integer idDiagnosticoPlanManejo;
+    // Relación con DiagnosticoPlanManejo
+    // He cambiado 'Integer idDiagnostico...' por la Entidad real.
+    // fetch = FetchType.LAZY es recomendado para rendimiento.
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_diagnostico_plan_manejo") 
+    private DiagnosticoPlanManejo diagnosticoPlanManejo;
 
-    // Auditoría
+    // ==========================================
+    //       CAMPOS DE AUDITORÍA
+    // ==========================================
+    
     @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;
 
@@ -49,6 +60,7 @@ public class HistoriaClinica {
     public void prePersist() {
         this.fechaCreacion = LocalDateTime.now();
         this.lastModified = LocalDateTime.now();
+        if (this.uuidOffline == null) this.uuidOffline = java.util.UUID.randomUUID().toString();
     }
 
     @PreUpdate
