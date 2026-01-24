@@ -8,6 +8,6 @@ import java.util.List;
 @Repository
 public interface AlergiaPacienteRepository extends JpaRepository<AlergiaPaciente, Integer> {
     
-    // CORRECCIÓN: Usamos la propiedad 'paciente' y luego el campo 'idPaciente' de esa clase
+    // Gracias a @ManyToOne Paciente, esto funciona perfectamente
     List<AlergiaPaciente> findByPaciente_IdPaciente(Integer idPaciente);
 }

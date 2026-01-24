@@ -3,10 +3,8 @@ package ec.gob.salud.hce.backend.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-// --- IMPORTS NECESARIOS PARA LA LISTA ---
-import java.util.List;
-import java.util.ArrayList;
 
 @Entity
 @Table(name = "desarrollos_psicomotores")
@@ -19,56 +17,34 @@ public class DesarrolloPsicomotor {
     @Column(name = "id_desarrollo_psicomotor")
     private Integer idDesarrolloPsicomotor;
 
-    @Column(name = "sosten_cefalo", length = 150)
-    private String sostenCefalo;
+    // RELACIÓN: Muchos desarrollos pertenecen a un Paciente
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_paciente", nullable = false)
+    private Paciente paciente;
 
-    @Column(length = 150)
-    private String sedestacion;
-
-    @Column(length = 150)
-    private String deambulacion;
-
-    @Column(length = 150)
-    private String lenguaje;
+    // RELACIÓN: Un desarrollo pertenece a una Historia Clínica
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_historia_clinica") 
+    private HistoriaClinica historiaClinica;
 
     @Column(length = 100)
     private String observacion;
 
-    // Relaciones
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_paciente", referencedColumnName = "id_paciente")
-    private Paciente paciente;
+    @Column(name = "fecha_evaluacion")
+    private LocalDate fechaEvaluacion;
 
-    @Column(name = "id_historia_clinica")
-    private Integer idHistoriaClinica;
+    // ... Resto de tus campos de auditoría (usuario, uuid, etc) ...
+    @Column(length = 50) private String usuario;
+    @Column(name = "uuid_offline", length = 36) private String uuidOffline;
+    @Column(name = "sync_status", length = 20) private String syncStatus;
+    @Column(name = "last_modified") private LocalDateTime lastModified;
+    @Column(length = 20) private String origin;
 
-    // --- UNIÓN CON ALIMENTACIÓN (Esto conecta con la entidad anterior) ---
-    @OneToMany(mappedBy = "desarrolloPsicomotor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Alimentacion> alimentaciones = new ArrayList<>();
-
-    // Auditoría y Sincronización
-    @Column(name = "uuid_offline", length = 36)
-    private String uuidOffline;
-
-    @Column(name = "sync_status", length = 20)
-    private String syncStatus;
-
-    @Column(name = "last_modified")
-    private LocalDateTime lastModified;
-
-    @Column(length = 20)
-    private String origin;
-
-    @PrePersist
-    protected void onCreate() {
+    @PrePersist @PreUpdate
+    protected void updateAudit() {
         this.lastModified = LocalDateTime.now();
         if (this.uuidOffline == null) this.uuidOffline = java.util.UUID.randomUUID().toString();
         if (this.syncStatus == null) this.syncStatus = "PENDING";
-        if (this.origin == null) this.origin = "WEB";
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.lastModified = LocalDateTime.now();
+        if (this.fechaEvaluacion == null) this.fechaEvaluacion = LocalDate.now();
     }
 }

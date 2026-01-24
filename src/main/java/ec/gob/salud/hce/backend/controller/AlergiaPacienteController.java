@@ -1,6 +1,8 @@
 package ec.gob.salud.hce.backend.controller;
 
+import ec.gob.salud.hce.backend.dto.AlergiaPacienteDTO;
 import ec.gob.salud.hce.backend.entity.AlergiaPaciente;
+import ec.gob.salud.hce.backend.mapper.AlergiaPacienteMapper;
 import ec.gob.salud.hce.backend.repository.AlergiaPacienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,35 +11,34 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/alergias-pacientes")
+@RequestMapping("/api/alergias-paciente")
 public class AlergiaPacienteController {
 
     @Autowired
     private AlergiaPacienteRepository repository;
 
+    // Obtener todas las asignaciones
     @GetMapping
-    public List<AlergiaPaciente> listarTodo() {
-        return repository.findAll();
+    public List<AlergiaPacienteDTO> getAll() {
+        return AlergiaPacienteMapper.toDtoList(repository.findAll());
     }
 
+    // Obtener alergias de un paciente específico
     @GetMapping("/paciente/{idPaciente}")
-    public List<AlergiaPaciente> listarPorPaciente(@PathVariable Integer idPaciente) {
-        // CORRECCIÓN: Se cambió findByIdPaciente por findByPaciente_IdPaciente
-        return repository.findByPaciente_IdPaciente(idPaciente);
+    public List<AlergiaPacienteDTO> getByPaciente(@PathVariable Integer idPaciente) {
+        return AlergiaPacienteMapper.toDtoList(repository.findByPaciente_IdPaciente(idPaciente));
     }
 
+    // Asignar una alergia a un paciente
     @PostMapping
-    public AlergiaPaciente guardar(@RequestBody AlergiaPaciente alergiaPaciente) {
-        return repository.save(alergiaPaciente);
-    }
+    public ResponseEntity<AlergiaPacienteDTO> create(@RequestBody AlergiaPacienteDTO dto) {
+        AlergiaPaciente entity = AlergiaPacienteMapper.toEntity(dto);
+        
+        if (dto.getUuidOffline() != null) {
+            entity.setUuidOffline(dto.getUuidOffline());
+        }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
-        return repository.findById(id)
-                .map(a -> {
-                    repository.delete(a);
-                    return ResponseEntity.ok().<Void>build();
-                })
-                .orElse(ResponseEntity.notFound().build());
+        AlergiaPaciente guardado = repository.save(entity);
+        return ResponseEntity.ok(AlergiaPacienteMapper.toDto(guardado));
     }
 }

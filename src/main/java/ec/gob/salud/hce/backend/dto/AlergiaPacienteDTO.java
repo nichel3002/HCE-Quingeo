@@ -6,14 +6,15 @@ import java.time.LocalDateTime;
 
 @Data
 public class AlergiaPacienteDTO {
-    private Integer idAlergiaPaciente; // id_alergia_paciente
-    private String reaccion;           // reaccion (20)
-    private String observaciones;      // observaciones (100)
-    private Integer idPaciente;        // id_paciente
-    private Integer idAlergia;         // id_alergia
-    private Integer idAntecedentePatologicoPersonal; // id_antecedente_patologico_personal
+    private Integer idAlergiaPaciente;
+    private String reaccion;
+    private String observaciones;
     
-    // Campos de auditoría y sincronización
+    private Integer idPaciente; // Integer
+    private Integer idAlergia;  // Integer (Aunque la entidad sea Long, el DTO usa Integer)
+    
+    private Integer idAntecedentePatologicoPersonal;
+    
     private LocalDate fechaCreacion;
     private String uuidOffline;
     private String syncStatus;

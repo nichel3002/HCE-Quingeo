@@ -1,34 +1,43 @@
 package ec.gob.salud.hce.backend.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import java.time.LocalDate;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.List; // Import necesario
 
-@Getter
-@Setter
+@Data
 public class PacienteResponseDTO {
     private Integer idPaciente;
-    private String primerNombre;
-    private String segundoNombre;
+    
     private String apellidoPaterno;
     private String apellidoMaterno;
-    private String sexo;
+    private String primerNombre;
+    private String segundoNombre;
+    private String nombreCompleto; // Campo calculado útil para frontend
+    
     private String tipoSangre;
     private LocalDate fechaNacimiento;
-    private LocalDate fechaCreacion;
-    private Integer edad;
-
-    // Ubicación
+    private String sexo;
+    private Integer edad; // Agregado para el Mapper
+    
+    // Datos de Auditoría
+    private LocalDateTime fechaCreacion;
+    private LocalDateTime lastModified;
+    private String syncStatus;
+    private String uuidOffline;
+    
+    // Relaciones (IDs planos)
     private Integer idGrupoEtnico;
-    private Integer idPrqParroquia;
+    private Integer idPersonal;
+    
+    // Ubicación
+    private Integer idParroquia;
     private Integer idPrqCanton;
-    private Integer idPrqProvincia;
+    private Integer idPrqCntProvincia;
+    // Agrego este campo extra si tu base de datos usa la clave compuesta completa
+    private Integer idPrqParroquia; 
 
-    // --- AQUÍ ESTÁ LA UNIÓN DE INFORMACIÓN ---
-    // En lugar de IDs, enviamos las listas de datos completos
+    // --- LISTAS DE RELACIONES (Necesarias para que el Mapper toResponse funcione) ---
     private List<DesarrolloPsicomotorDTO> desarrollosPsicomotores;
     private List<AntecedenteFamiliarDTO> antecedentesFamiliares;
-    private List<ExamenFisicoDTO> examenesFisicos;
-    private List<AlergiaPacienteDTO> alergias; 
 }

@@ -7,6 +7,5 @@ import java.util.List;
 
 @Repository
 public interface DesarrolloPsicomotorRepository extends JpaRepository<DesarrolloPsicomotor, Integer> {
-    // Buscar hitos del desarrollo por paciente
-    List<DesarrolloPsicomotor> findByPacienteIdPaciente(Integer idPaciente);
+    List<DesarrolloPsicomotor> findByIdHistoriaClinica(Integer idHistoriaClinica);
 }
